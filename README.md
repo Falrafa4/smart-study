@@ -1,0 +1,3 @@
+# SmartStudy (nama bisa berganti sewaktu-waktu)
+
+SmartStudy adalah aplikasi web yang membantu siswa mengelola tugas sekolah secara lebih efektif melalui sistem manajemen tugas dan dukungan Artificial Intelligence (AI). AI tidak hanya membantu menentukan prioritas pengerjaan tugas, tetapi juga memberikan prediksi materi yang kemungkinan akan dipelajari selanjutnya agar siswa dapat mempersiapkan diri lebih awal
