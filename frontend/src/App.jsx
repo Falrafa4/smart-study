@@ -1,122 +1,50 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import JadwalMapel from './pages/JadwalMapel'
+import DetailTugas from './pages/DetailTugas'
+import RekomendasiTugas from './pages/RekomendasiTugas'
+import PrediksiMateri from './pages/PrediksiMateri'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [activePage, setActivePage] = useState('jadwal')
+
+  const menus = [
+    { id: 'jadwal', label: 'Jadwal Pelajaran' },
+    { id: 'tugas', label: 'Input Tugas' },
+    { id: 'rekomendasi', label: 'Rekomendasi AI' },
+    { id: 'prediksi', label: 'Prediksi Materi' },
+  ]
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="flex min-h-screen bg-cobalt-neutral font-sans text-cobalt-primary">
+      {/* Sidebar Notion-style */}
+      <aside className="w-64 bg-cobalt-surface border-r border-gray-200 fixed h-full flex flex-col">
+        <div className="p-6">
+          <h1 className="text-xl font-bold tracking-tight mb-8">SmartStudy AI.</h1>
+          <nav className="flex flex-col gap-2">
+            {menus.map(menu => (
+              <button
+                key={menu.id}
+                onClick={() => setActivePage(menu.id)}
+                className={`text-left px-4 py-2 rounded-md text-[0.95rem] transition-colors ${
+                  activePage === menu.id 
+                    ? 'bg-cobalt-neutral text-cobalt-tertiary font-semibold' 
+                    : 'text-cobalt-secondary hover:bg-gray-50'
+                }`}
+              >
+                {menu.label}
+              </button>
+            ))}
+          </nav>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </aside>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      {/* Main Content Area */}
+      <main className="ml-64 flex-1 p-12 max-w-5xl">
+        {activePage === 'jadwal' && <JadwalMapel />}
+        {activePage === 'tugas' && <DetailTugas />}
+        {activePage === 'rekomendasi' && <RekomendasiTugas />}
+        {activePage === 'prediksi' && <PrediksiMateri />}
+      </main>
+    </div>
   )
 }
-
-export default App
