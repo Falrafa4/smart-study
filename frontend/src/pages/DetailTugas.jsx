@@ -1,58 +1,73 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 export default function DetailTugas() {
-  const [difficulty, setDifficulty] = useState(3)
+  const [difficulty, setDifficulty] = useState(3);
 
   return (
-    <div className="animate-fade-in max-w-2xl">
-      <h2 className="text-3xl font-bold tracking-tight mb-2">Input Tugas Baru</h2>
-      <p className="text-cobalt-secondary text-[0.95rem] mb-8">Masukkan detail tugas sekolahmu di sini.</p>
+    <div className="space-y-8 max-w-4xl py-6 relative">
       
-      <div className="bg-cobalt-surface p-8 rounded-xl border border-gray-100 shadow-sm">
-        <form className="flex flex-col gap-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold tracking-wider text-cobalt-secondary mb-2">MATA PELAJARAN</label>
-              <input type="text" placeholder="Matematika" className="w-full bg-cobalt-neutral border-none rounded-md p-3 text-[0.95rem] focus:ring-2 focus:ring-cobalt-tertiary" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold tracking-wider text-cobalt-secondary mb-2">DEADLINE</label>
-              <input type="date" className="w-full bg-cobalt-neutral border-none rounded-md p-3 text-[0.95rem] text-cobalt-secondary focus:ring-2 focus:ring-cobalt-tertiary" />
-            </div>
-          </div>
-          
-          <div>
-            <label className="block text-xs font-semibold tracking-wider text-cobalt-secondary mb-2">NAMA MATERI / TUGAS</label>
-            <input type="text" placeholder="Latihan Soal Trigonometri Hal 40" className="w-full bg-cobalt-neutral border-none rounded-md p-3 text-[0.95rem] focus:ring-2 focus:ring-cobalt-tertiary" />
-          </div>
+      {/* 1. Efek Glow Gradasi Blur di Background */}
+      <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-[100px] opacity-10 pointer-events-none"></div>
+      
+      {/* Header */}
+      <div className="relative z-10">
+        <button className="text-gray-400 hover:text-gray-900 transition-colors text-sm font-medium mb-4 flex items-center gap-2">
+          &larr; Kembali ke Dashboard
+        </button>
+      </div>
 
+      {/* Form dengan gaya Modular & Elevasi */}
+      <div className="relative z-10 bg-white rounded-3xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-8 space-y-6 overflow-hidden">
+        
+        {/* 2. Aksen Garis Gradasi di Atas Card */}
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600"></div>
+
+        {/* Input Mata Pelajaran */}
+        <div>
+          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Mata Pelajaran</label>
+          <input type="text" className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-4 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" placeholder="Masukkan nama mata pelajaran..." />
+        </div>
+
+        {/* Input Materi */}
+        <div>
+          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Nama Materi</label>
+          <textarea className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-4 h-32 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none resize-none" placeholder="Jelaskan detail tugas atau materi yang harus dipelajari..."></textarea>
+        </div>
+
+        {/* Baris bawah: Deadline & Kesulitan */}
+        <div className="grid grid-cols-2 gap-8 items-end">
           <div>
-            <label className="block text-xs font-semibold tracking-wider text-cobalt-secondary mb-3">TINGKAT KESULITAN (1 Sangat Mudah - 5 Sangat Sulit)</label>
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Deadline</label>
+            <input type="date" className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-4 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Tingkat Kesulitan</label>
             <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map(num => (
-                <button
-                  key={num}
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button 
+                  key={n} 
                   type="button"
-                  onClick={() => setDifficulty(num)}
-                  className={`w-12 h-12 rounded-md font-bold transition-all ${
-                    difficulty === num 
-                      ? 'bg-cobalt-primary text-white' 
-                      : 'bg-cobalt-neutral text-cobalt-secondary hover:bg-gray-200'
+                  onClick={() => setDifficulty(n)} 
+                  className={`w-12 h-12 rounded-xl font-bold transition-all ${
+                    difficulty === n 
+                      ? 'bg-gray-950 text-white shadow-xl shadow-gray-950/20' 
+                      : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
                   }`}
                 >
-                  {num}
+                  {n}
                 </button>
               ))}
             </div>
           </div>
+        </div>
 
-          <div className="pt-4 border-t border-gray-100">
-            <button type="button" className="bg-cobalt-tertiary text-white py-3 px-6 rounded-md text-[0.95rem] font-medium hover:bg-blue-700 transition-colors">
-              Simpan Tugas
-            </button>
-          </div>
-        </form>
+        {/* 3. Tombol Simpan - Gradasi Biru Mewah */}
+        <div className="pt-6">
+          <button type="button" className="w-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-700 hover:via-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-blue-500/30 active:scale-[0.99]">
+            Simpan Tugas ke Sistem
+          </button>
+        </div>
       </div>
     </div>
-  )
+  );
 }
