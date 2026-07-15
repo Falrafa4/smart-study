@@ -1,5 +1,6 @@
-// src/pages/Dashboard.jsx
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import Button from '../components/Button';
 
 export default function Dashboard() {
   return (
@@ -20,7 +21,7 @@ export default function Dashboard() {
         <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold">Prioritas Tugas</h3>
-            <button className="text-xs font-bold text-blue-600 hover:underline">Lihat Semua</button>
+            <Link to="/rekomendasi" className="text-xs font-bold text-blue-600 hover:underline">Lihat Semua</Link>
           </div>
           <div className="space-y-3">
              {/* Simulasi List 3 item */}
@@ -31,10 +32,19 @@ export default function Dashboard() {
         </div>
 
         {/* Prediksi Materi (Cuplikan) */}
-        <div className="bg-black text-white p-6 rounded-3xl">
-          <h3 className="font-bold mb-2">Prediksi Materi Selanjutnya</h3>
-          <p className="text-3xl font-black mb-4">Integral Dasar</p>
-          <button className="text-xs bg-white/10 px-4 py-2 rounded-lg font-bold">Cek Detail Materi</button>
+        <div className="bg-black text-white p-6 rounded-3xl flex flex-col justify-between">
+          <div>
+            <h3 className="font-bold mb-2">Prediksi Materi Selanjutnya</h3>
+            <p className="text-3xl font-black mb-4">Integral Dasar</p>
+          </div>
+          <Link to="/prediksi">
+            <Button 
+              variant="neutral" 
+              className="text-xs bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-bold w-fit"
+            >
+              Cek Detail Materi
+            </Button>
+          </Link>
         </div>
       </div>
     </motion.div>

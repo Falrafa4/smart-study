@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import Button from '../components/Button';
 
 export default function JadwalMapel() {
-  const [jadwalList, setJadwalList] = useState([
+  const [jadwalList] = useState([
     { hari: 'Senin', jam: '07:00', mapel: 'Matematika' }
-  ])
+  ]);
 
   return (
     <div className="animate-fade-in">
@@ -29,9 +30,13 @@ export default function JadwalMapel() {
               <label className="block text-xs font-semibold tracking-wider text-cobalt-secondary mb-1">MATA PELAJARAN</label>
               <input type="text" placeholder="Misal: Fisika" className="w-full bg-cobalt-neutral border-none rounded-md p-2 text-[0.95rem] focus:ring-2 focus:ring-cobalt-tertiary" />
             </div>
-            <button type="button" className="mt-4 bg-cobalt-tertiary text-white py-2 px-4 rounded-md text-[0.95rem] font-medium hover:bg-blue-700 transition-colors">
+            <Button 
+              type="button" 
+              variant="small" 
+              className="mt-4 w-full"
+            >
               Tambah Jadwal
-            </button>
+            </Button>
           </form>
         </div>
 
@@ -59,5 +64,5 @@ export default function JadwalMapel() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Button from '../components/Button';
 
 export default function DetailTugas() {
   const [difficulty, setDifficulty] = useState(3);
@@ -11,9 +13,12 @@ export default function DetailTugas() {
       
       {/* Header */}
       <div className="relative z-10">
-        <button className="text-gray-400 hover:text-gray-900 transition-colors text-sm font-medium mb-4 flex items-center gap-2">
+        <Link 
+          to="/" 
+          className="text-gray-400 hover:text-gray-900 transition-colors text-sm font-medium mb-4 flex items-center gap-2"
+        >
           &larr; Kembali ke Dashboard
-        </button>
+        </Link>
       </div>
 
       {/* Form dengan gaya Modular & Elevasi */}
@@ -44,18 +49,14 @@ export default function DetailTugas() {
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Tingkat Kesulitan</label>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map((n) => (
-                <button 
+                <Button 
                   key={n} 
-                  type="button"
+                  variant={difficulty === n ? 'dark' : 'neutral'}
                   onClick={() => setDifficulty(n)} 
-                  className={`w-12 h-12 rounded-xl font-bold transition-all ${
-                    difficulty === n 
-                      ? 'bg-gray-950 text-white shadow-xl shadow-gray-950/20' 
-                      : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
-                  }`}
+                  className="w-12 h-12 rounded-xl"
                 >
                   {n}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -63,9 +64,13 @@ export default function DetailTugas() {
 
         {/* 3. Tombol Simpan - Gradasi Biru Mewah */}
         <div className="pt-6">
-          <button type="button" className="w-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-700 hover:via-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-blue-500/30 active:scale-[0.99]">
+          <Button 
+            type="button" 
+            variant="primary" 
+            className="w-full"
+          >
             Simpan Tugas ke Sistem
-          </button>
+          </Button>
         </div>
       </div>
     </div>
