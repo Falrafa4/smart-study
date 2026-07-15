@@ -16,6 +16,11 @@ ln -sf /app/data/smartstudy.db /app/smartstudy.db
 echo "Running alembic migrations..."
 alembic upgrade head
 
+# Run database seeder
+echo "Running database seeder..."
+python seed.py
+
 # Start FastAPI application
 echo "Starting FastAPI application..."
 exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+
