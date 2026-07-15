@@ -50,20 +50,20 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-[280px] flex-shrink-0 bg-white flex flex-col justify-between z-30 shadow-[4px_0_24px_rgba(0,0,0,0.03)] border-r border-gray-100 relative">
+    <aside className="w-[280px] flex-shrink-0 bg-cobalt-surface flex flex-col justify-between z-30 border-r border-gray-200 relative">
       <div className="flex flex-col h-full px-6 py-10">
         
         {/* Logo Branding */}
         <div className="flex flex-col items-center justify-center text-center mb-12">
-          <div className="w-16 h-16 bg-gray-950 rounded-2xl flex items-center justify-center mb-5 shadow-xl shadow-gray-900/10">
+          <div className="w-16 h-16 bg-cobalt-primary rounded-cobalt-lg flex items-center justify-center mb-5">
             <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
             </svg>
           </div>
-          <h1 className="text-xl font-extrabold tracking-tight text-gray-950">
+          <h1 className="text-xl font-bold tracking-tight text-cobalt-primary">
             SmartStudy
           </h1>
-          <span className="text-[11px] font-bold text-gray-400 tracking-[0.2em] uppercase mt-1">
+          <span className="text-[11px] font-bold text-cobalt-secondary tracking-[0.2em] uppercase mt-1">
             AI Task Manager
           </span>
         </div>
@@ -75,16 +75,16 @@ export default function Sidebar() {
               key={menu.path}
               to={menu.path}
               className={({ isActive }) => 
-                `w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[0.95rem] transition-all duration-300 ${
+                `w-full flex items-center gap-4 px-5 py-3 rounded-cobalt-md text-[0.95rem] transition-all duration-200 ${
                   isActive
-                    ? 'bg-gray-950 text-white shadow-lg shadow-gray-900/15 font-medium scale-[1.02]'
-                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-950 font-normal'
+                    ? 'bg-cobalt-primary text-white font-medium shadow-none'
+                    : 'text-cobalt-secondary hover:bg-cobalt-neutral hover:text-cobalt-primary font-normal'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <div className={`${isActive ? 'text-white' : 'text-gray-400'}`}>
+                  <div className={`${isActive ? 'text-white' : 'text-cobalt-secondary'}`}>
                     {menu.icon}
                   </div>
                   {menu.label}
@@ -97,9 +97,9 @@ export default function Sidebar() {
         {/* Profil */}
         <div className="mt-8 pt-8 border-t border-gray-100">
           <div className="flex flex-col items-center text-center">
-            <span className="text-sm font-bold text-gray-950">Kevin Daniswara Raditya</span>
-            <span className="text-xs font-medium text-gray-500 mt-1">XI SIJA 1</span>
-            <p className="text-[11px] text-gray-400 mt-3 max-w-[200px] leading-relaxed">
+            <span className="text-sm font-bold text-cobalt-primary">Kevin Daniswara Raditya</span>
+            <span className="text-xs font-medium text-cobalt-secondary mt-1">XI SIJA 1</span>
+            <p className="text-[11px] text-cobalt-secondary mt-3 max-w-[200px] leading-relaxed">
               Sistem rekap dan manajemen tugas sekolah terintegrasi.
             </p>
           </div>

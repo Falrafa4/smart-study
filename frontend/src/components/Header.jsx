@@ -14,12 +14,12 @@ export default function Header() {
   const currentTitle = titleMap[location.pathname] || 'SmartStudy Workspace';
 
   return (
-    <header className="pt-20 px-12 pb-6 relative z-10">
+    <header className="pt-16 px-12 pb-4">
       <div>
-        <span className="text-xs font-bold tracking-widest text-blue-500 uppercase mb-2 block">
+        <span className="text-[0.75rem] font-semibold tracking-[0.02em] text-cobalt-secondary uppercase mb-1 block">
           Workspace Dashboard
         </span>
-        <h2 className="text-4xl font-extrabold tracking-tight text-gray-950">
+        <h2 className="text-[2rem] font-bold tracking-[-0.02em] text-cobalt-primary leading-tight">
           {currentTitle}
         </h2>
       </div>

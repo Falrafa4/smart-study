@@ -1,5 +1,3 @@
-
-
 export default function Button({ 
   children, 
   variant = 'primary', 
@@ -8,19 +6,19 @@ export default function Button({
   className = '', 
   ...props 
 }) {
-  const baseStyle = 'transition-all duration-300 font-bold active:scale-[0.99] flex items-center justify-center gap-2';
+  const baseStyle = 'transition-all duration-200 font-semibold flex items-center justify-center gap-2 active:scale-[0.99]';
   
   const variants = {
-    // Tombol utama dengan efek gradasi mewah
-    primary: 'bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-700 hover:via-blue-600 hover:to-indigo-700 text-white py-4 px-6 rounded-2xl shadow-xl shadow-blue-500/30',
-    // Tombol warna gelap solid
-    dark: 'bg-gray-950 text-white shadow-xl shadow-gray-950/20 rounded-xl hover:bg-gray-900',
-    // Tombol netral / abu-abu terang
-    neutral: 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-700 rounded-xl',
+    // Tombol utama menggunakan Cobalt Blue Flat (Tertiary)
+    primary: 'bg-cobalt-tertiary text-white py-3 px-5 rounded-cobalt-md hover:bg-blue-700',
+    // Tombol warna gelap solid (Primary)
+    dark: 'bg-cobalt-primary text-white py-3 px-5 rounded-cobalt-md hover:bg-gray-800',
+    // Tombol abu-abu netral
+    neutral: 'bg-cobalt-neutral text-cobalt-secondary border border-gray-200 py-3 px-5 rounded-cobalt-md hover:bg-gray-100 hover:text-cobalt-primary',
     // Tombol link minimalis
-    link: 'text-gray-400 hover:text-gray-900 font-medium transition-colors',
-    // Tombol kecil untuk form jadwal
-    small: 'bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md text-[0.95rem] font-medium'
+    link: 'text-cobalt-secondary hover:text-cobalt-primary font-medium transition-colors',
+    // Tombol berukuran kecil untuk form ringkas
+    small: 'bg-cobalt-tertiary text-white py-2 px-4 rounded-cobalt-sm text-[0.95rem] hover:bg-blue-700'
   };
 
   const selectedVariant = variants[variant] || '';

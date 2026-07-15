@@ -6,54 +6,56 @@ export default function DetailTugas() {
   const [difficulty, setDifficulty] = useState(3);
 
   return (
-    <div className="space-y-8 max-w-4xl py-6 relative">
-      
-      {/* 1. Efek Glow Gradasi Blur di Background */}
-      <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-[100px] opacity-10 pointer-events-none"></div>
-      
+    <div className="space-y-cobalt-md py-4">
       {/* Header */}
-      <div className="relative z-10">
+      <div>
         <Link 
           to="/" 
-          className="text-gray-400 hover:text-gray-900 transition-colors text-sm font-medium mb-4 flex items-center gap-2"
+          className="text-cobalt-secondary hover:text-cobalt-primary transition-colors text-sm font-medium flex items-center gap-2"
         >
           &larr; Kembali ke Dashboard
         </Link>
       </div>
 
-      {/* Form dengan gaya Modular & Elevasi */}
-      <div className="relative z-10 bg-white rounded-3xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-8 space-y-6 overflow-hidden">
-        
-        {/* 2. Aksen Garis Gradasi di Atas Card */}
-        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600"></div>
-
+      {/* Form Card */}
+      <div className="bg-cobalt-surface rounded-cobalt-lg border border-gray-200 p-cobalt-lg space-y-6">
         {/* Input Mata Pelajaran */}
         <div>
-          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Mata Pelajaran</label>
-          <input type="text" className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-4 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" placeholder="Masukkan nama mata pelajaran..." />
+          <label className="block text-[0.75rem] font-bold text-cobalt-secondary uppercase tracking-[0.02em] mb-2">Mata Pelajaran</label>
+          <input 
+            type="text" 
+            className="w-full bg-cobalt-neutral border border-gray-200 rounded-cobalt-md p-4 text-cobalt-primary focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary transition-all outline-none" 
+            placeholder="Masukkan nama mata pelajaran..." 
+          />
         </div>
 
         {/* Input Materi */}
         <div>
-          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Nama Materi</label>
-          <textarea className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-4 h-32 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none resize-none" placeholder="Jelaskan detail tugas atau materi yang harus dipelajari..."></textarea>
+          <label className="block text-[0.75rem] font-bold text-cobalt-secondary uppercase tracking-[0.02em] mb-2">Nama Materi</label>
+          <textarea 
+            className="w-full bg-cobalt-neutral border border-gray-200 rounded-cobalt-md p-4 h-32 text-cobalt-primary focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary transition-all outline-none resize-none" 
+            placeholder="Jelaskan detail tugas atau materi yang harus dipelajari..."
+          />
         </div>
 
-        {/* Baris bawah: Deadline & Kesulitan */}
-        <div className="grid grid-cols-2 gap-8 items-end">
+        {/* Deadline & Kesulitan */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Deadline</label>
-            <input type="date" className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-4 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
+            <label className="block text-[0.75rem] font-bold text-cobalt-secondary uppercase tracking-[0.02em] mb-2">Deadline</label>
+            <input 
+              type="date" 
+              className="w-full bg-cobalt-neutral border border-gray-200 rounded-cobalt-md p-4 text-cobalt-primary focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary transition-all outline-none" 
+            />
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Tingkat Kesulitan</label>
+            <label className="block text-[0.75rem] font-bold text-cobalt-secondary uppercase tracking-[0.02em] mb-2">Tingkat Kesulitan</label>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map((n) => (
                 <Button 
                   key={n} 
                   variant={difficulty === n ? 'dark' : 'neutral'}
                   onClick={() => setDifficulty(n)} 
-                  className="w-12 h-12 rounded-xl"
+                  className="w-12 h-12 rounded-cobalt-md"
                 >
                   {n}
                 </Button>
@@ -62,8 +64,8 @@ export default function DetailTugas() {
           </div>
         </div>
 
-        {/* 3. Tombol Simpan - Gradasi Biru Mewah */}
-        <div className="pt-6">
+        {/* Tombol Simpan (Primary Action) */}
+        <div className="pt-4">
           <Button 
             type="button" 
             variant="primary" 

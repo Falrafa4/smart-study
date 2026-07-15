@@ -13,7 +13,18 @@ export default {
           tertiary: "#2563EB",
           neutral: "#F9FAFB",
           surface: "#FFFFFF",
+          'on-primary': "#FFFFFF",
         }
+      },
+      borderRadius: {
+        'cobalt-sm': '6px',
+        'cobalt-md': '8px',
+        'cobalt-lg': '12px',
+      },
+      spacing: {
+        'cobalt-sm': '8px',
+        'cobalt-md': '16px',
+        'cobalt-lg': '32px',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
