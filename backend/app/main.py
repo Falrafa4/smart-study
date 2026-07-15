@@ -2,6 +2,8 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+from .services.ai_prediction import predict_next_material
+from .schemas import PrediksiMateriRequest, PrediksiMateriResponse
 
 from .database import get_db
 from . import models, schemas
@@ -85,6 +87,23 @@ def get_all_tugas(db: Session = Depends(get_db)):
     """Retrieve all Tugas (tasks)."""
     return db.query(models.Tugas).all()
 
+
+# ===========================================================================
+# Prediksi Materi Endpoint (AI-powered prediction)
+# ===========================================================================
+
+
+@app.post("/api/prediksi-materi", response_model=PrediksiMateriResponse)
+def prediksi_materi(request: PrediksiMateriRequest, db: Session = Depends(get_db)):
+    hasil = predict_next_material(db, request.mapel_id, request.user_id)
+    print(hasil)
+    if not hasil:
+        raise HTTPException(
+            status_code=404,
+            detail="Belum ada riwayat tugas untuk mapel ini"
+        )
+    return hasil
+        
 
 # ===========================================================================
 # JADWAL AI (Placeholder) Endpoint
