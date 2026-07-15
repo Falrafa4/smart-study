@@ -1,2 +1,12 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
+@keyframes fade-in {
+  /* Ubah jarak dari 10px menjadi 15px agar pergerakan lebih terasa */
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  /* Ubah 0.5s menjadi 0.8s agar lebih lambat dan elegan */
+  animation: fade-in 0.5s ease-out forwards;
+}

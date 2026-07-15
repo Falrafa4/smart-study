@@ -10,16 +10,18 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Root Layout */}
+        {/* Root Layout - Mengatur struktur utama aplikasi */}
         <Route path="/" element={<MainLayout />}>
-          {/* Sub-routes */}
+          {/* Halaman Default (Dashboard) */}
           <Route index element={<Dashboard />} />
+          
+          {/* Sub-routes untuk setiap menu */}
           <Route path="tugas" element={<DetailTugas />} />
           <Route path="jadwal" element={<JadwalMapel />} />
           <Route path="rekomendasi" element={<RekomendasiTugas />} />
           <Route path="prediksi" element={<PrediksiMateri />} />
           
-          {/* Catch-all redirect to Dashboard */}
+          {/* Catch-all route untuk menangani URL yang tidak terdaftar */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

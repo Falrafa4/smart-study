@@ -1,14 +1,9 @@
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 
 export default function Dashboard() {
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 10 }} 
-      animate={{ opacity: 1, y: 0 }} 
-      className="space-y-cobalt-lg"
-    >
+    <div className="space-y-cobalt-lg">
       {/* Greeting */}
       <section>
         <h2 className="text-[2rem] font-bold tracking-[-0.02em] text-cobalt-primary">Halo, Kevin 👋</h2>
@@ -46,6 +41,6 @@ export default function Dashboard() {
           </Link>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
