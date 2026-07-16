@@ -1,7 +1,10 @@
 import json
+import logging
 from sqlalchemy.orm import Session
 from .. import models
 from .gemini_client import ask_gemini_with_retry
+
+logger = logging.getLogger(__name__)
 
 
 def recommend_task_priority(db: Session, user_id: int):
@@ -26,7 +29,7 @@ def recommend_task_priority(db: Session, user_id: int):
         daftar_tugas.append({
             "judul": tugas.judul,
             "deadline": str(tugas.deadline),
-            "kesulitan": tugas.prioritas,   
+            "kesulitan": tugas.prioritas,
             "deskripsi": tugas.deskripsi
         })
 
@@ -55,4 +58,11 @@ Jawab HANYA dalam format JSON seperti ini:
 
     cleaned = hasil.strip().removeprefix("```json").removesuffix("```").strip()
 
-    return json.loads(cleaned)
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError as exc:
+        logger.error("Gagal parse JSON dari Gemini response: %s\nRaw text: %s", exc, hasil)
+        raise ValueError(
+            f"Gemini mengembalikan format yang tidak valid. "
+            f"Detail: {exc}"
+        ) from exc

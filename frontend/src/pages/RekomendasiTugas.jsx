@@ -91,7 +91,7 @@ export default function RekomendasiTugas() {
 
       <div className="flex justify-between items-center">
         <Link
-          to="/"
+          to="/dashboard"
           className="text-cobalt-secondary hover:text-cobalt-primary transition-colors text-sm font-medium flex items-center gap-2"
         >
           &larr; Kembali ke Dashboard
@@ -118,7 +118,7 @@ export default function RekomendasiTugas() {
 
           {/* Task Cards */}
           <div className="flex flex-col gap-3">
-            {recommendedTasks.map((task, idx) => {
+            {recommendedTasks.map((task) => {
               const mapel = getMapelDetails(task.mapel_id);
               const styles = getPriorityStyle(task.prioritas);
               const formattedDate = task.deadline
@@ -185,7 +185,7 @@ export default function RekomendasiTugas() {
             Hebat, tidak ada tugas yang tersisa. Silakan bersantai atau tambahkan tugas baru.
           </p>
           <Link
-            to="/tugas"
+            to="/dashboard/tugas"
             className="inline-flex items-center gap-2 bg-cobalt-tertiary hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-cobalt-md transition-colors"
           >
             Tambah Tugas Baru

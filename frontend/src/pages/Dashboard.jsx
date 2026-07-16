@@ -70,7 +70,7 @@ export default function Dashboard() {
                 {isLoading ? "Memuat tugas..." : `${tasks.length} tugas menunggumu`}
               </p>
             </div>
-            <Link to="/rekomendasi" className="text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline transition-colors pb-1">
+            <Link to="/dashboard/rekomendasi" className="text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline transition-colors pb-1">
               Lihat Semua &rarr;
             </Link>
           </div>
@@ -86,7 +86,7 @@ export default function Dashboard() {
                 return (
                   <Link
                     key={task.id}
-                    to="/rekomendasi"
+                    to="/dashboard/rekomendasi"
                     className="group flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-blue-50/50 border border-transparent hover:border-blue-100 transition-all cursor-pointer"
                   >
                     <div className="flex items-center gap-4">
@@ -162,7 +162,7 @@ export default function Dashboard() {
           </div>
 
           <div className="relative z-10 mt-auto">
-            <Link to="/prediksi" className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white font-bold py-3.5 px-6 rounded-xl transition-all active:scale-95 w-fit">
+            <Link to="/dashboard/prediksi" className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white font-bold py-3.5 px-6 rounded-xl transition-all active:scale-95 w-fit">
               Cek Detail Materi
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />

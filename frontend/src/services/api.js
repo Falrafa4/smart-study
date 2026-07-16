@@ -1,7 +1,11 @@
 import axios from "axios";
 
+// Ensure baseURL always ends with /api so frontend paths match backend routes
+const configuredBase = import.meta.env.VITE_API_BASE_URL || "https://api-smartstudy.naufalrafa.my.id/api";
+const baseURL = configuredBase.endsWith("/api") ? configuredBase : `${configuredBase}/api`;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL,
   withCredentials: false, // using JWT in Authorization header
 });
 

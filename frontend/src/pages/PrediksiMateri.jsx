@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import api from "../services/api";
 import ToastModal from "../components/ToastModal";
 import useDebounce from "../hooks/useDebounce";
@@ -7,18 +7,18 @@ export default function PrediksiMateri() {
   const [subjects, setSubjects] = useState([]);
   const [selectedSubjectId, setSelectedSubjectId] = useState("");
   const [prediction, setPrediction] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   // Fetch all subjects on mount
   useEffect(() => {
-    setIsLoading(true);
     api
       .get("/mapel")
       .then((res) => {
-        setSubjects(res.data);
-        if (res.data.length > 0) {
-          setSelectedSubjectId(res.data[0].id);
+        const data = Array.isArray(res.data) ? res.data : [];
+        setSubjects(data);
+        if (data.length > 0) {
+          setSelectedSubjectId(data[0].id);
         }
       })
       .catch((err) => {
@@ -31,7 +31,9 @@ export default function PrediksiMateri() {
   }, []);
 
   // Debounced fetch function to get predictions
-  const fetchPrediction = useDebounce((subjectId) => {
+  const fetchPredictionRef = useRef(null);
+
+  const debouncedFetch = useDebounce((subjectId) => {
     if (!subjectId) return;
     setIsLoading(true);
     setError("");
@@ -51,10 +53,15 @@ export default function PrediksiMateri() {
       });
   }, 500);
 
+  // Keep ref always pointing to latest debounced function
+  useEffect(() => {
+    fetchPredictionRef.current = debouncedFetch;
+  });
+
   // Trigger prediction fetch when selected subject changes
   useEffect(() => {
     if (selectedSubjectId) {
-      fetchPrediction(selectedSubjectId);
+      fetchPredictionRef.current(selectedSubjectId);
     }
   }, [selectedSubjectId]);
 
@@ -83,7 +90,7 @@ export default function PrediksiMateri() {
             onChange={(e) => setSelectedSubjectId(e.target.value)}
             className="bg-white border border-gray-200 rounded-cobalt-md px-4 py-2.5 text-[0.95rem] text-cobalt-primary font-semibold focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary outline-none transition-all cursor-pointer shadow-sm"
           >
-            {subjects.map((subj) => (
+            {(subjects || []).map((subj) => (
               <option key={subj.id} value={subj.id}>
                 {subj.nama}
               </option>
@@ -106,7 +113,7 @@ export default function PrediksiMateri() {
               </div>
             ) : prediction && prediction.riwayat_materi && prediction.riwayat_materi.length > 0 ? (
               <div className="relative border-l-2 border-gray-100 ml-3">
-                {prediction.riwayat_materi.map((materi, idx) => (
+                {(prediction.riwayat_materi || []).map((materi, idx) => (
                   <div key={idx} className="mb-6 ml-6 relative">
                     <span
                       className="absolute -left-[1.95rem] top-1 h-3 w-3 rounded-full border-2 border-white"
@@ -152,13 +159,13 @@ export default function PrediksiMateri() {
                   AI PREDICTION
                 </span>
                 <h1 className="text-[2.25rem] font-extrabold text-cobalt-primary tracking-tight leading-tight">
-                  {prediction.prediksi_materi_berikutnya}
+                  {String(prediction.prediksi_materi_berikutnya || "")}
                 </h1>
               </div>
 
               <div className="bg-cobalt-neutral border border-gray-100 p-5 rounded-cobalt-md">
                 <p className="text-[0.95rem] text-cobalt-secondary leading-[1.6]">
-                  {prediction.alasan}
+                  {String(prediction.alasan || "")}
                 </p>
               </div>
 

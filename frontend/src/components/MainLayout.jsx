@@ -10,7 +10,7 @@ export default function MainLayout() {
 
   // Efek pintar: Otomatis menutup sidebar di HP setiap kali kamu pindah halaman
   useEffect(() => {
-    setIsMobileMenuOpen(false);
+    requestAnimationFrame(() => setIsMobileMenuOpen(false));
   }, [location.pathname]);
 
   return (

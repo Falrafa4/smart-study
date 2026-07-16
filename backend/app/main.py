@@ -165,8 +165,14 @@ def get_all_tugas(db: Session = Depends(get_db)):
 
 @app.post("/api/prediksi-materi", response_model=PrediksiMateriResponse)
 def prediksi_materi(request: PrediksiMateriRequest, db: Session = Depends(get_db)):
-    hasil = predict_next_material(db, request.mapel_id, request.user_id)
-    print(hasil)
+    try:
+        hasil = predict_next_material(db, request.mapel_id, request.user_id)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Layanan AI sedang tidak tersedia. Silakan coba lagi nanti. ({type(exc).__name__})"
+        ) from exc
+
     if not hasil:
         raise HTTPException(
             status_code=404,
@@ -184,4 +190,10 @@ def generate_jadwal_ai(
     request: schemas.JadwalAIRequest,
     db: Session = Depends(get_db)
 ):
-    return recommend_task_priority(db, request.user_id)
+    try:
+        return recommend_task_priority(db, request.user_id)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Layanan AI sedang tidak tersedia. Silakan coba lagi nanti. ({type(exc).__name__})"
+        ) from exc

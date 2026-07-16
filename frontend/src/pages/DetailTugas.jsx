@@ -61,7 +61,7 @@ export default function DetailTugas() {
       {/* Header */}
       <div>
         <Link 
-          to="/" 
+          to="/dashboard" 
           className="text-cobalt-secondary hover:text-cobalt-primary transition-colors text-sm font-medium flex items-center gap-2"
         >
           &larr; Kembali ke Dashboard

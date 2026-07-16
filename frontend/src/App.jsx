@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
 import MainLayout from './components/MainLayout';
 import Dashboard from './pages/Dashboard';
 import JadwalMapel from './pages/JadwalMapel';
@@ -10,20 +11,20 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Root Layout - Mengatur struktur utama aplikasi */}
-        <Route path="/" element={<MainLayout />}>
-          {/* Halaman Default (Dashboard) */}
+        {/* Landing Page — standalone, no sidebar/header */}
+        <Route path="/" element={<LandingPage />} />
+        
+        {/* Dashboard App — with sidebar/header layout */}
+        <Route path="/dashboard" element={<MainLayout />}>
           <Route index element={<Dashboard />} />
-          
-          {/* Sub-routes untuk setiap menu */}
           <Route path="tugas" element={<DetailTugas />} />
           <Route path="jadwal" element={<JadwalMapel />} />
           <Route path="rekomendasi" element={<RekomendasiTugas />} />
           <Route path="prediksi" element={<PrediksiMateri />} />
-          
-          {/* Catch-all route untuk menangani URL yang tidak terdaftar */}
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
+        
+        {/* Catch-all route untuk menangani URL yang tidak terdaftar */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
