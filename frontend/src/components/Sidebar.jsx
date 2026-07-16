@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 export default function Sidebar() {
   const menus = [
@@ -56,11 +56,13 @@ export default function Sidebar() {
         
         {/* Logo Branding */}
         <div className="flex flex-col items-center justify-center text-center mb-12">
-          <div className="w-16 h-16 bg-cobalt-primary rounded-cobalt-lg flex items-center justify-center mb-5">
-            <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
-          </div>
+          <Link to="/">
+            <div className="w-16 h-16 bg-cobalt-primary rounded-cobalt-lg flex items-center justify-center mb-5">
+              <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+          </Link>
           <h1 className="text-xl font-bold tracking-tight text-cobalt-primary">
             SmartStudy
           </h1>
