@@ -17,7 +17,12 @@ def predict_next_material(db: Session, mapel_id: int, user_id: int = 1):
     )
 
     if not riwayat:
-        return None
+        return {
+            "mapel_id": mapel_id,
+            "riwayat_materi": [],
+            "prediksi_materi_berikutnya": "-",
+            "alasan": "Data materi tidak cukup untuk melakukan prediksi.",
+        }
 
     # Urutkan dari yang paling lama ke terbaru, pakai 'judul' sebagai materi
     daftar_materi = [t.judul for t in reversed(riwayat)]

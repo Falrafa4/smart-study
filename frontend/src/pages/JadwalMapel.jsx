@@ -1,11 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import api from '../services/api';
 
 export default function JadwalMapel() {
-  const [schedules, setSchedules] = useState([
-    { id: 1, hari: 'Senin', jam: '07:00', mapel: 'Matematika Tingkat Lanjut' },
-    { id: 2, hari: 'Selasa', jam: '08:30', mapel: 'Pemrograman Web & Perangkat Bergerak' },
-    { id: 3, hari: 'Rabu', jam: '10:00', mapel: 'Administrasi Infrastruktur Jaringan' }
-  ]);
+  const [schedules, setSchedules] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [hari, setHari] = useState('Senin');
   const [jam, setJam] = useState('');
@@ -27,17 +25,32 @@ export default function JadwalMapel() {
 
   const timeSlots = [...new Set(schedules.map(s => s.jam))].sort();
 
-  const handleAdd = (e) => {
+  useEffect(() => {
+    api.get("/jadwal")
+      .then(res => setSchedules(res.data))
+      .catch(err => alert("Gagal memuat jadwal: " + (err.response?.data?.detail || err.message)))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleAdd = async (e) => {
     e.preventDefault();
     if (!jam || !mapel) return;
-    
-    const newSchedule = { id: Date.now(), hari, jam, mapel };
-    setSchedules([...schedules, newSchedule]);
-    setJam(''); setMapel('');
+    try {
+      const res = await api.post("/jadwal", { hari, jam, mapel, user_id: 1 });
+      setSchedules([...schedules, res.data]);
+      setJam(''); setMapel('');
+    } catch (err) {
+      alert("Gagal menyimpan jadwal: " + (err.response?.data?.detail || err.message));
+    }
   };
 
-  const handleDelete = (id) => {
-    setSchedules(schedules.filter(schedule => schedule.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/jadwal/${id}`);
+      setSchedules(schedules.filter(s => s.id !== id));
+    } catch (err) {
+      alert("Gagal menghapus jadwal: " + (err.response?.data?.detail || err.message));
+    }
   };
 
   const handleTabClick = (day) => {
@@ -140,7 +153,11 @@ export default function JadwalMapel() {
             ))}
           </div>
 
-          {viewMode === 'daily' ? (
+          {loading ? (
+            <div className="text-center py-8 md:py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+              <p className="text-gray-400 font-medium text-sm">Memuat jadwal...</p>
+            </div>
+          ) : viewMode === 'daily' ? (
             /* Card View - Filtered by Day */
             <div className="space-y-3">
               {filteredSchedules.length === 0 ? (

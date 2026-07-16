@@ -1,7 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import api from "../services/api";
 import ToastModal from "../components/ToastModal";
-import useDebounce from "../hooks/useDebounce";
 
 export default function PrediksiMateri() {
   const [subjects, setSubjects] = useState([]);
@@ -19,51 +18,74 @@ export default function PrediksiMateri() {
         setSubjects(data);
         if (data.length > 0) {
           setSelectedSubjectId(data[0].id);
+        } else {
+          // No subjects at all — nothing to predict
+          setIsLoading(false);
         }
       })
       .catch((err) => {
         const errMsg = err.response?.data?.detail || "Gagal memuat daftar mata pelajaran";
         setError(errMsg);
-      })
-      .finally(() => {
         setIsLoading(false);
       });
   }, []);
 
-  // Debounced fetch function to get predictions
-  const fetchPredictionRef = useRef(null);
+  // Stable prediction fetch function (no debounce needed — runs on select change)
+  const abortRef = useRef(null);
 
-  const debouncedFetch = useDebounce((subjectId) => {
-    if (!subjectId) return;
+  const fetchPrediction = useCallback((subjectId) => {
+    // ── GUARD: Skip API call entirely if subjectId is falsy ──
+    if (!subjectId) {
+      setPrediction(null);
+      setIsLoading(false);
+      return;
+    }
+
+    // Cancel any previous in-flight request
+    if (abortRef.current) {
+      abortRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setIsLoading(true);
     setError("");
 
     api
-      .post("/prediksi-materi", { mapel_id: parseInt(subjectId), user_id: 1 })
+      .post(
+        "/prediksi-materi",
+        { mapel_id: parseInt(subjectId), user_id: 1 },
+        { signal: controller.signal }
+      )
       .then((res) => {
-        setPrediction(res.data);
+        const data = res.data;
+
+        // ── GUARD: Backend returned empty history → show empty state, NOT an error ──
+        if (!data || !data.riwayat_materi || data.riwayat_materi.length === 0) {
+          setPrediction(null);
+          setIsLoading(false);
+          return;
+        }
+
+        setPrediction(data);
+        setIsLoading(false);
       })
       .catch((err) => {
-        const errMsg = err.response?.data?.detail || "Gagal memuat prediksi materi";
+        // Ignore aborted requests (user switched subject quickly)
+        if (err?.code === "ERR_CANCELED") return;
+
+        // AI service unavailable — show fallback, NOT error toast
         setPrediction(null);
-        setError(errMsg);
-      })
-      .finally(() => {
         setIsLoading(false);
       });
-  }, 500);
-
-  // Keep ref always pointing to latest debounced function
-  useEffect(() => {
-    fetchPredictionRef.current = debouncedFetch;
-  });
+  }, []);
 
   // Trigger prediction fetch when selected subject changes
   useEffect(() => {
     if (selectedSubjectId) {
-      fetchPredictionRef.current(selectedSubjectId);
+      fetchPrediction(selectedSubjectId);
     }
-  }, [selectedSubjectId]);
+  }, [selectedSubjectId, fetchPrediction]);
 
   const selectedSubject = subjects.find((s) => s.id === parseInt(selectedSubjectId));
 

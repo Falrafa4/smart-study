@@ -63,6 +63,30 @@ class JadwalAIRequest(BaseModel):
     user_id: int = 1
     strategi: Optional[str] = "default"
 
+
+# ============================================================
+# JADWAL (Class Schedule) Schemas
+# ============================================================
+
+class JadwalCreate(BaseModel):
+    """Schema for creating a new Jadwal (schedule entry)."""
+    hari: str
+    jam: str
+    mapel: str
+    user_id: int = 1
+
+
+class JadwalResponse(BaseModel):
+    """Schema for returning Jadwal data from the API."""
+    id: int
+    hari: str
+    jam: str
+    mapel: str
+    user_id: int
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
 # ============================================================
 # PREDIKSI MATERI (AI Prediction) Schemas
 # ============================================================

@@ -17,6 +17,7 @@ class User(Base):
     # Relationships
     mapel_list = relationship("Mapel", back_populates="user")
     tugas_list = relationship("Tugas", back_populates="user")
+    jadwal_list = relationship("Jadwal", back_populates="user")
 
 
 class Mapel(Base):
@@ -50,3 +51,17 @@ class Tugas(Base):
     # Relationships
     mapel = relationship("Mapel", back_populates="tugas_list")
     user = relationship("User", back_populates="tugas_list")
+
+
+class Jadwal(Base):
+    """Jadwal (Class Schedule)"""
+    __tablename__ = "jadwal"
+
+    id = Column(Integer, primary_key=True, index=True)
+    hari = Column(String, nullable=False)
+    jam = Column(String, nullable=False)
+    mapel = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    user = relationship("User", back_populates="jadwal_list")

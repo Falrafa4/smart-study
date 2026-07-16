@@ -139,6 +139,18 @@ def seed_database():
             ),
         ]
         db.add_all(tugas_data)
+        db.flush()
+
+        # 4. Seed Jadwal
+        jadwal_data = [
+            models.Jadwal(hari="Senin", jam="07:00", mapel="Matematika", user_id=user.id),
+            models.Jadwal(hari="Senin", jam="09:00", mapel="Bahasa Inggris", user_id=user.id),
+            models.Jadwal(hari="Selasa", jam="08:00", mapel="Administrasi Sistem Jaringan (ASJ)", user_id=user.id),
+            models.Jadwal(hari="Rabu", jam="10:00", mapel="Teknologi Layanan Jaringan (TLJ)", user_id=user.id),
+            models.Jadwal(hari="Kamis", jam="13:00", mapel="Produk Kreatif dan Kewirausahaan (PKK)", user_id=user.id),
+        ]
+        db.add_all(jadwal_data)
+
         db.commit()
         print("Database seeding selesai dengan sukses!")
     except Exception as e:

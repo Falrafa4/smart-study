@@ -165,6 +165,24 @@ def get_all_tugas(db: Session = Depends(get_db)):
 
 @app.post("/api/prediksi-materi", response_model=PrediksiMateriResponse)
 def prediksi_materi(request: PrediksiMateriRequest, db: Session = Depends(get_db)):
+    # ── GUARD: Check if this subject has any tugas BEFORE calling AI ──
+    tugas_count = (
+        db.query(models.Tugas)
+        .filter(
+            models.Tugas.mapel_id == request.mapel_id,
+            models.Tugas.user_id == request.user_id,
+        )
+        .count()
+    )
+    if tugas_count == 0:
+        # Return a clean 200 with empty data — no AI call needed
+        return {
+            "mapel_id": request.mapel_id,
+            "riwayat_materi": [],
+            "prediksi_materi_berikutnya": "-",
+            "alasan": "Data materi tidak cukup untuk melakukan prediksi.",
+        }
+
     try:
         hasil = predict_next_material(db, request.mapel_id, request.user_id)
     except Exception as exc:
@@ -173,11 +191,6 @@ def prediksi_materi(request: PrediksiMateriRequest, db: Session = Depends(get_db
             detail=f"Layanan AI sedang tidak tersedia. Silakan coba lagi nanti. ({type(exc).__name__})"
         ) from exc
 
-    if not hasil:
-        raise HTTPException(
-            status_code=404,
-            detail="Belum ada riwayat tugas untuk mapel ini"
-        )
     return hasil
         
 
@@ -197,3 +210,43 @@ def generate_jadwal_ai(
             status_code=503,
             detail=f"Layanan AI sedang tidak tersedia. Silakan coba lagi nanti. ({type(exc).__name__})"
         ) from exc
+
+
+# ===========================================================================
+# JADWAL (Class Schedule) CRUD Endpoints
+# ===========================================================================
+
+@app.post("/api/jadwal", response_model=schemas.JadwalResponse, status_code=201)
+def create_jadwal(jadwal: schemas.JadwalCreate, db: Session = Depends(get_db)):
+    """Create a new Jadwal (schedule entry)."""
+    db_jadwal = models.Jadwal(
+        hari=jadwal.hari,
+        jam=jadwal.jam,
+        mapel=jadwal.mapel,
+        user_id=jadwal.user_id,
+    )
+    db.add(db_jadwal)
+    db.commit()
+    db.refresh(db_jadwal)
+    return db_jadwal
+
+
+@app.get("/api/jadwal", response_model=List[schemas.JadwalResponse])
+def get_all_jadwal(db: Session = Depends(get_db)):
+    """Retrieve all Jadwal (schedule entries)."""
+    return db.query(models.Jadwal).all()
+
+
+@app.delete("/api/jadwal/{jadwal_id}", status_code=200)
+def delete_jadwal(jadwal_id: int, db: Session = Depends(get_db)):
+    """Delete a Jadwal (schedule entry) by ID."""
+    db_jadwal = db.query(models.Jadwal).filter(models.Jadwal.id == jadwal_id).first()
+    if not db_jadwal:
+        raise HTTPException(status_code=404, detail="Jadwal tidak ditemukan")
+    db.delete(db_jadwal)
+    db.commit()
+    return {"detail": "Jadwal berhasil dihapus"}
+
+@app.get("/api/test-route")
+def test_route():
+    return {"status": "ok"}

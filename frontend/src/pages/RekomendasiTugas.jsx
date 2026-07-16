@@ -14,51 +14,63 @@ export default function RekomendasiTugas() {
       setIsLoading(true);
       setError("");
       try {
-        // Fetch all subjects and tasks
-        const [mapelRes, tugasRes, recommendationRes] = await Promise.all([
+        // Fetch subjects and tasks first
+        const [mapelRes, tugasRes] = await Promise.all([
           api.get("/mapel"),
           api.get("/tugas"),
-          api.post("/jadwal/generate-ai", { user_id: 1, strategi: "default" }),
         ]);
 
         const mapels = mapelRes.data;
         const allTasks = tugasRes.data;
-        const recommendationData = recommendationRes.data;
-
         setSubjects(mapels);
 
-        if (recommendationData.urutan && allTasks.length > 0) {
-          // Sort tasks based on AI recommendation list
-          const sorted = [];
-          
-          // Map tasks by title for easy lookup
-          const taskMap = allTasks.reduce((acc, t) => {
-            acc[t.judul.toLowerCase().trim()] = t;
-            return acc;
-          }, {});
+        const uncompletedTasks = allTasks.filter((t) => !t.is_selesai);
 
-          // Build sorted list from recommendation titles
-          recommendationData.urutan.forEach((title) => {
-            const matched = taskMap[title.toLowerCase().trim()];
-            if (matched) {
-              sorted.push(matched);
-            }
-          });
-
-          // Add any tasks not returned in recommendation to the end
-          allTasks.forEach((t) => {
-            if (!sorted.find((s) => s.id === t.id) && !t.is_selesai) {
-              sorted.push(t);
-            }
-          });
-
-          setRecommendedTasks(sorted.filter((t) => !t.is_selesai));
-        } else {
-          // Fallback to active tasks
-          setRecommendedTasks(allTasks.filter((t) => !t.is_selesai));
+        // If no uncompleted tasks, skip AI call entirely
+        if (uncompletedTasks.length === 0) {
+          setRecommendedTasks([]);
+          return;
         }
+
+        // Only call AI if there are tasks to recommend
+        let sorted = [...uncompletedTasks];
+        try {
+          const recommendationRes = await api.post("/jadwal/generate-ai", {
+            user_id: 1,
+            strategi: "default",
+          });
+          const recommendationData = recommendationRes.data;
+
+          if (recommendationData.urutan) {
+            const taskMap = allTasks.reduce((acc, t) => {
+              acc[t.judul.toLowerCase().trim()] = t;
+              return acc;
+            }, {});
+
+            const aiSorted = [];
+            recommendationData.urutan.forEach((title) => {
+              const matched = taskMap[title.toLowerCase().trim()];
+              if (matched) {
+                aiSorted.push(matched);
+              }
+            });
+
+            // Add tasks not returned by AI to the end
+            uncompletedTasks.forEach((t) => {
+              if (!aiSorted.find((s) => s.id === t.id)) {
+                aiSorted.push(t);
+              }
+            });
+
+            sorted = aiSorted;
+          }
+        } catch {
+          // AI call failed — gracefully fall back to default order
+        }
+
+        setRecommendedTasks(sorted);
       } catch (err) {
-        setError(err.response?.data?.detail || "Gagal memuat rekomendasi tugas dari AI");
+        setError(err.response?.data?.detail || "Gagal memuat data tugas");
       } finally {
         setIsLoading(false);
       }
