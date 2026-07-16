@@ -25,7 +25,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     # Added wildcard origin for easier local dev; tighten in prod.
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174", "*"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174", "https://smartstudyai-sija.vercel.app/", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -261,4 +261,4 @@ def delete_jadwal(jadwal_id: int, db: Session = Depends(get_db)):
 
 @app.get("/api/test-route")
 def test_route():
-    return {"status": "ok"}
+    return {"status": "ok"}
