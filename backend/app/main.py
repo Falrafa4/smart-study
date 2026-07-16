@@ -1,4 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
+# pyrefly: ignore [missing-import]
+from passlib.context import CryptContext
+from datetime import datetime, timedelta, timezone
+from jose import jwt
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
@@ -25,6 +29,70 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ---------------------------------------------------------------------------
+# AUTHENTICATION CONFIG & UTILS
+# ---------------------------------------------------------------------------
+SECRET_KEY = "your-super-secret-key-change-this-in-production"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+# ===========================================================================
+# AUTHENTICATION ENDPOINTS
+# ===========================================================================
+
+@app.post("/api/register", response_model=schemas.Token, status_code=status.HTTP_201_CREATED)
+def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(
+        (models.User.email == user.email) | (models.User.username == user.username)
+    ).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email or username already registered")
+        
+    hashed_password = get_password_hash(user.password)
+    new_user = models.User(
+        username=user.username, 
+        email=user.email, 
+        hashed_password=hashed_password
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    access_token = create_access_token(data={"sub": str(new_user.id)})
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.post("/api/login", response_model=schemas.Token)
+def login_user(user: schemas.UserLogin, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+    
+    if not db_user or not verify_password(user.password, db_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        
+    access_token = create_access_token(data={"sub": str(db_user.id)})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 # ===========================================================================
