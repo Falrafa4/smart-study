@@ -3,29 +3,45 @@ import api from "../services/api";
 import ToastModal from "../components/ToastModal";
 
 export default function PrediksiMateri() {
-  const [subjects, setSubjects] = useState([]);
-  const [selectedSubjectId, setSelectedSubjectId] = useState("");
+  const [mapelList, setMapelList] = useState([]);
+  const [selectedMapelId, setSelectedMapelId] = useState("");
   const [prediction, setPrediction] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Fetch all subjects on mount
+  // Fetch tasks + mapel on mount, build dropdown from ACTUAL task data
   useEffect(() => {
-    api
-      .get("/mapel")
-      .then((res) => {
-        const data = Array.isArray(res.data) ? res.data : [];
-        setSubjects(data);
-        if (data.length > 0) {
-          setSelectedSubjectId(data[0].id);
+    Promise.all([api.get("/tugas"), api.get("/mapel")])
+      .then(([tugasRes, mapelRes]) => {
+        const tasks = Array.isArray(tugasRes.data) ? tugasRes.data : [];
+        const mapels = Array.isArray(mapelRes.data) ? mapelRes.data : [];
+
+        // Build a lookup: mapel_id → mapel object
+        const mapelMap = {};
+        mapels.forEach((m) => { mapelMap[m.id] = m; });
+
+        // Extract unique mapel_ids from tasks, resolve to mapel objects
+        const seenIds = new Set();
+        const unique = [];
+        tasks.forEach((t) => {
+          if (!seenIds.has(t.mapel_id)) {
+            seenIds.add(t.mapel_id);
+            const found = mapelMap[t.mapel_id];
+            if (found) {
+              unique.push(found);
+            }
+          }
+        });
+
+        setMapelList(unique);
+        if (unique.length > 0) {
+          setSelectedMapelId(String(unique[0].id));
         } else {
-          // No subjects at all — nothing to predict
           setIsLoading(false);
         }
       })
-      .catch((err) => {
-        const errMsg = err.response?.data?.detail || "Gagal memuat daftar mata pelajaran";
-        setError(errMsg);
+      .catch(() => {
+        setError("Gagal memuat data mata pelajaran");
         setIsLoading(false);
       });
   }, []);
@@ -33,9 +49,9 @@ export default function PrediksiMateri() {
   // Stable prediction fetch function (no debounce needed — runs on select change)
   const abortRef = useRef(null);
 
-  const fetchPrediction = useCallback((subjectId) => {
-    // ── GUARD: Skip API call entirely if subjectId is falsy ──
-    if (!subjectId) {
+  const fetchPrediction = useCallback((mapelId) => {
+    // ── GUARD: Skip API call entirely if mapelId is falsy ──
+    if (!mapelId) {
       setPrediction(null);
       setIsLoading(false);
       return;
@@ -54,7 +70,7 @@ export default function PrediksiMateri() {
     api
       .post(
         "/prediksi-materi",
-        { mapel_id: parseInt(subjectId), user_id: 1 },
+        { mapel_id: parseInt(mapelId), user_id: 1 },
         { signal: controller.signal }
       )
       .then((res) => {
@@ -82,12 +98,12 @@ export default function PrediksiMateri() {
 
   // Trigger prediction fetch when selected subject changes
   useEffect(() => {
-    if (selectedSubjectId) {
-      fetchPrediction(selectedSubjectId);
+    if (selectedMapelId) {
+      requestAnimationFrame(() => fetchPrediction(selectedMapelId));
     }
-  }, [selectedSubjectId, fetchPrediction]);
+  }, [selectedMapelId, fetchPrediction]);
 
-  const selectedSubject = subjects.find((s) => s.id === parseInt(selectedSubjectId));
+  const selectedMapel = mapelList.find((m) => m.id === parseInt(selectedMapelId));
 
   return (
     <div className="space-y-cobalt-md py-4">
@@ -108,13 +124,16 @@ export default function PrediksiMateri() {
           </label>
           <select
             id="subject-select"
-            value={selectedSubjectId}
-            onChange={(e) => setSelectedSubjectId(e.target.value)}
+            value={selectedMapelId}
+            onChange={(e) => setSelectedMapelId(e.target.value)}
             className="bg-white border border-gray-200 rounded-cobalt-md px-4 py-2.5 text-[0.95rem] text-cobalt-primary font-semibold focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary outline-none transition-all cursor-pointer shadow-sm"
           >
-            {(subjects || []).map((subj) => (
-              <option key={subj.id} value={subj.id}>
-                {subj.nama}
+            {mapelList.length === 0 && (
+              <option value="" disabled>-- Pilih Mata Pelajaran --</option>
+            )}
+            {mapelList.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.nama}
               </option>
             ))}
           </select>
@@ -126,7 +145,7 @@ export default function PrediksiMateri() {
         <div className="bg-cobalt-surface p-6 rounded-cobalt-lg border border-gray-200 flex flex-col justify-between">
           <div>
             <h3 className="text-xs font-bold tracking-[0.02em] text-cobalt-secondary mb-6 uppercase">
-              5 MATERI TERAKHIR: {selectedSubject ? selectedSubject.nama.toUpperCase() : "-"}
+              5 MATERI TERAKHIR: {selectedMapel ? selectedMapel.nama.toUpperCase() : "-"}
             </h3>
 
             {isLoading ? (
@@ -139,7 +158,7 @@ export default function PrediksiMateri() {
                   <div key={idx} className="mb-6 ml-6 relative">
                     <span
                       className="absolute -left-[1.95rem] top-1 h-3 w-3 rounded-full border-2 border-white"
-                      style={{ backgroundColor: selectedSubject?.kode_warna || "#E5E7EB" }}
+                      style={{ backgroundColor: selectedMapel?.kode_warna || "#E5E7EB" }}
                     ></span>
                     <p className="text-[0.95rem] text-cobalt-primary font-medium">{materi}</p>
                   </div>

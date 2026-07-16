@@ -54,6 +54,11 @@ class TugasResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class TugasUpdate(BaseModel):
+    """Schema for updating a Tugas (task)."""
+    is_selesai: bool
+
+
 # ============================================================
 # JADWAL AI (Schedule AI Placeholder) Schemas
 # ============================================================

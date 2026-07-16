@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import api from "../services/api";
 import ToastModal from "../components/ToastModal";
 
@@ -8,6 +9,7 @@ export default function RekomendasiTugas() {
   const [subjects, setSubjects] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [completingTask, setCompletingTask] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,6 +98,21 @@ export default function RekomendasiTugas() {
     }
   };
 
+  const handleComplete = (task) => {
+    setCompletingTask(task);
+  };
+
+  const confirmComplete = async () => {
+    if (!completingTask) return;
+    try {
+      await api.patch(`/tugas/${completingTask.id}`, { is_selesai: true });
+      setRecommendedTasks((prev) => prev.filter((t) => t.id !== completingTask.id));
+    } catch {
+      // silently fail — task list will refresh on next load
+    }
+    setCompletingTask(null);
+  };
+
   return (
     <div className="max-w-3xl space-y-6 py-4">
       {/* Toast Error Alert */}
@@ -170,6 +187,16 @@ export default function RekomendasiTugas() {
                     <span className="text-[0.8rem] font-bold text-cobalt-primary bg-cobalt-neutral border border-gray-150 px-3 py-1.5 rounded-cobalt-sm">
                       📅 {formattedDate}
                     </span>
+                    <button
+                      onClick={() => handleComplete(task)}
+                      className="opacity-0 group-hover:opacity-100 flex items-center gap-1 text-[0.75rem] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-cobalt-sm transition-all"
+                      title="Tandai selesai"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Selesai
+                    </button>
                   </div>
                 </div>
               );
@@ -204,6 +231,40 @@ export default function RekomendasiTugas() {
           </Link>
         </div>
       )}
+
+      {/* Celebratory Popup */}
+      <AnimatePresence>
+        {completingTask && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+            onClick={confirmComplete}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              className="bg-white rounded-cobalt-lg shadow-2xl p-8 max-w-sm w-full text-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-5xl mb-4">🎉</div>
+              <h3 className="text-xl font-bold text-cobalt-primary mb-2">Hebat!</h3>
+              <p className="text-cobalt-secondary text-[0.95rem] leading-relaxed mb-6">
+                Tugas <span className="font-semibold text-emerald-600">{completingTask.judul}</span> telah selesai!
+              </p>
+              <button
+                onClick={confirmComplete}
+                className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3 rounded-cobalt-md transition-colors"
+              >
+                Tutup
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

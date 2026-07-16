@@ -158,6 +158,18 @@ def get_all_tugas(db: Session = Depends(get_db)):
     return db.query(models.Tugas).all()
 
 
+@app.patch("/api/tugas/{tugas_id}", response_model=schemas.TugasResponse)
+def update_tugas(tugas_id: int, tugas_update: schemas.TugasUpdate, db: Session = Depends(get_db)):
+    """Update a Tugas (task) — e.g., mark as done."""
+    db_tugas = db.query(models.Tugas).filter(models.Tugas.id == tugas_id).first()
+    if not db_tugas:
+        raise HTTPException(status_code=404, detail="Tugas tidak ditemukan")
+    db_tugas.is_selesai = tugas_update.is_selesai
+    db.commit()
+    db.refresh(db_tugas)
+    return db_tugas
+
+
 # ===========================================================================
 # Prediksi Materi Endpoint (AI-powered prediction)
 # ===========================================================================
