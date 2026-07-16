@@ -62,3 +62,20 @@ class JadwalAIRequest(BaseModel):
     """Placeholder request body for the AI schedule generator."""
     user_id: int = 1
     strategi: Optional[str] = "default"
+
+# ============================================================
+# PREDIKSI MATERI (AI Prediction) Schemas
+# ============================================================
+
+class PrediksiMateriRequest(BaseModel):
+    """Schema for requesting next-material prediction."""
+    mapel_id: int
+    user_id: int = 1
+
+
+class PrediksiMateriResponse(BaseModel):
+    """Schema for returning next-material prediction."""
+    mapel_id: int
+    riwayat_materi: list[str]
+    prediksi_materi_berikutnya: str
+    alasan: str

@@ -2,6 +2,9 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+from .services.ai_prediction import predict_next_material
+from .schemas import PrediksiMateriRequest, PrediksiMateriResponse
+from app.services.task_recomen import recommend_task_priority
 
 from .database import get_db
 from . import models, schemas
@@ -87,14 +90,29 @@ def get_all_tugas(db: Session = Depends(get_db)):
 
 
 # ===========================================================================
+# Prediksi Materi Endpoint (AI-powered prediction)
+# ===========================================================================
+
+
+@app.post("/api/prediksi-materi", response_model=PrediksiMateriResponse)
+def prediksi_materi(request: PrediksiMateriRequest, db: Session = Depends(get_db)):
+    hasil = predict_next_material(db, request.mapel_id, request.user_id)
+    print(hasil)
+    if not hasil:
+        raise HTTPException(
+            status_code=404,
+            detail="Belum ada riwayat tugas untuk mapel ini"
+        )
+    return hasil
+        
+
+# ===========================================================================
 # JADWAL AI (Placeholder) Endpoint
 # ===========================================================================
 
 @app.post("/api/jadwal/generate-ai")
-def generate_jadwal_ai(request: schemas.JadwalAIRequest):
-    """Placeholder endpoint for AI-based schedule generation."""
-    return {
-        "message": "Jadwal AI berhasil dibuat, fitur menyusul!",
-        "user_id": request.user_id,
-        "strategi": request.strategi,
-    }
+def generate_jadwal_ai(
+    request: schemas.JadwalAIRequest,
+    db: Session = Depends(get_db)
+):
+    return recommend_task_priority(db, request.user_id)
