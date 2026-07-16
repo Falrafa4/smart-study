@@ -18,3 +18,15 @@ def ask_gemini(prompt: str) -> str:
     model = genai.GenerativeModel(GEMINI_MODEL)
     response = model.generate_content(prompt)
     return response.text
+
+
+def ask_gemini_with_retry(prompt: str, retries: int = 2) -> str:
+    """Call Gemini with exponential back-off. Raises after `retries` attempts."""
+    import time
+    for attempt in range(retries + 1):
+        try:
+            return ask_gemini(prompt)
+        except Exception as exc:
+            if attempt == retries:
+                raise exc
+            time.sleep(2 ** attempt)

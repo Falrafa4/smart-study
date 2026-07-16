@@ -1,7 +1,7 @@
 import json
 from sqlalchemy.orm import Session
 from .. import models
-from .gemini_client import ask_gemini
+from .gemini_client import ask_gemini_with_retry
 
 
 def predict_next_material(db: Session, mapel_id: int, user_id: int = 1):
@@ -30,7 +30,7 @@ besar akan muncul berikutnya. Jawab HANYA dalam format JSON, tanpa teks tambahan
 {{"prediksi": "...", "alasan": "..."}}
 """
 
-    raw_text = ask_gemini(prompt)
+    raw_text = ask_gemini_with_retry(prompt)
     cleaned = raw_text.strip().removeprefix("```json").removesuffix("```").strip()
     hasil = json.loads(cleaned)
 

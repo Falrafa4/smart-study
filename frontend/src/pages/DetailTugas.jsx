@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import Button from '../components/Button';
 
 export default function DetailTugas() {
@@ -38,7 +38,7 @@ export default function DetailTugas() {
         payload.deadline = null;
       }
 
-      const response = await axios.post('http://localhost:8000/api/tugas', payload);
+      const response = await api.post('/tugas', payload);
       
       if (response.status === 201) {
         alert("Tugas Berhasil Disimpan!");

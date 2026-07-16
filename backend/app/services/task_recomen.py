@@ -1,7 +1,7 @@
 import json
 from sqlalchemy.orm import Session
 from .. import models
-from .openai_client import ask_openai
+from .gemini_client import ask_gemini_with_retry
 
 
 def recommend_task_priority(db: Session, user_id: int):
@@ -51,7 +51,7 @@ Jawab HANYA dalam format JSON seperti ini:
 }}
 """
 
-    hasil = ask_openai(prompt)
+    hasil = ask_gemini_with_retry(prompt)
 
     cleaned = hasil.strip().removeprefix("```json").removesuffix("```").strip()
 
