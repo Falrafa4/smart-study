@@ -7,6 +7,10 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from app.database import SessionLocal
 from app import models
+# pyrefly: ignore [missing-import]
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def seed_database():
     db = SessionLocal()
@@ -22,7 +26,8 @@ def seed_database():
         user = models.User(
             id=1,
             username="kevin",
-            email="kevin@smartstudy.id"
+            email="kevin@smartstudy.id",
+            hashed_password=pwd_context.hash("rahasia123")
         )
         db.add(user)
         db.flush() # Flush to get user.id before generating relations
