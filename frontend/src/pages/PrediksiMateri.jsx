@@ -216,9 +216,9 @@ export default function PrediksiMateri() {
                 </span>
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-cobalt-tertiary rounded-full" style={{ width: "85%" }}></div>
+                    <div className="h-full bg-cobalt-tertiary rounded-full" style={{ width: `${prediction.confidence || 50}%` }}></div>
                   </div>
-                  <span className="text-lg font-bold text-cobalt-primary">85%</span>
+                  <span className="text-lg font-bold text-cobalt-primary">{prediction.confidence || 50}%</span>
                 </div>
               </div>
             </>
