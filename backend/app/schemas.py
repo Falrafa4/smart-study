@@ -108,6 +108,7 @@ class PrediksiMateriResponse(BaseModel):
     riwayat_materi: list[str]
     prediksi_materi_berikutnya: str
     alasan: str
+    confidence: int = 50
 
 # ============================================================
 # AUTHENTICATION Schemas
