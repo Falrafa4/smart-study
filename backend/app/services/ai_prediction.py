@@ -1,36 +1,19 @@
 import json
 import logging
-from sqlalchemy.orm import Session
-from .. import models
 from .gemini_client import ask_gemini_with_retry
 from .ai_context import SEKOLAH_CONTEXT
 
 logger = logging.getLogger(__name__)
 
 
-def predict_next_material(db: Session, mapel_id: int, user_id: int = 1):
-    # Lookup subject name for strict prompting
-    mapel = db.query(models.Mapel).filter(models.Mapel.id == mapel_id).first()
-    mapel_nama = mapel.nama if mapel else "Mata Pelajaran"
+def predict_next_material(mapel_nama: str, mapel_id: int, daftar_materi: list[str]):
+    """Predict next material using Gemini AI.
 
-    riwayat = (
-        db.query(models.Tugas)
-        .filter(models.Tugas.mapel_id == mapel_id, models.Tugas.user_id == user_id)
-        .order_by(models.Tugas.created_at.desc())
-        .limit(5)
-        .all()
-    )
-
-    if not riwayat:
-        return {
-            "mapel_id": mapel_id,
-            "riwayat_materi": [],
-            "prediksi_materi_berikutnya": "-",
-            "alasan": "Data materi tidak cukup untuk melakukan prediksi.",
-        }
-
-    # Urutkan dari yang paling lama ke terbaru, pakai 'judul' sebagai materi
-    daftar_materi = [t.judul for t in reversed(riwayat)]
+    Args:
+        mapel_nama: Name of the subject.
+        mapel_id: ID of the subject.
+        daftar_materi: List of last 5 material titles (oldest first).
+    """
 
     prompt = f"""
 Kamu adalah AI prediktor materi pelajaran untuk siswa SMK jurusan TJAT (Teknik Jaringan Akses Telekomunikasi) dan SIJA (Sistem Informasi, Jaringan, dan Aplikasi).

@@ -193,8 +193,27 @@ def prediksi_materi(request: PrediksiMateriRequest, db: Session = Depends(get_db
             "alasan": "Data materi tidak cukup untuk melakukan prediksi.",
         }
 
+    # ── Extract all data from DB FIRST, then release session ──
+    mapel = db.query(models.Mapel).filter(models.Mapel.id == request.mapel_id).first()
+    mapel_nama = mapel.nama if mapel else "Mata Pelajaran"
+
+    riwayat = (
+        db.query(models.Tugas)
+        .filter(
+            models.Tugas.mapel_id == request.mapel_id,
+            models.Tugas.user_id == request.user_id,
+        )
+        .order_by(models.Tugas.created_at.desc())
+        .limit(5)
+        .all()
+    )
+    daftar_materi = [t.judul for t in reversed(riwayat)]
+
+    # Release DB session BEFORE expensive AI call
+    db.close()
+
     try:
-        hasil = predict_next_material(db, request.mapel_id, request.user_id)
+        hasil = predict_next_material(mapel_nama, request.mapel_id, daftar_materi)
     except Exception as exc:
         raise HTTPException(
             status_code=503,
