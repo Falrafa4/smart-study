@@ -109,11 +109,11 @@ export default function DetailTugas() {
         <div>
           <label className="block text-[0.75rem] font-bold text-cobalt-secondary uppercase tracking-[0.02em] mb-2">Mata Pelajaran</label>
           {!isAddingNew ? (
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <select
                 value={selectedMapelId}
                 onChange={(e) => setSelectedMapelId(e.target.value)}
-                className="flex-1 bg-cobalt-neutral border border-gray-200 rounded-cobalt-md p-4 text-cobalt-primary focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary transition-all outline-none"
+                className="w-full sm:flex-1 bg-cobalt-neutral border border-gray-200 rounded-cobalt-md p-4 text-cobalt-primary focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary transition-all outline-none"
               >
                 {mapelList.length === 0 && <option value="" disabled>Pilih mata pelajaran...</option>}
                 {mapelList.map((m) => (
@@ -123,25 +123,25 @@ export default function DetailTugas() {
               <button
                 type="button"
                 onClick={() => setIsAddingNew(true)}
-                className="px-4 py-2 bg-cobalt-tertiary hover:bg-blue-700 text-white font-bold rounded-cobalt-md transition-colors text-sm whitespace-nowrap"
+                className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-cobalt-tertiary hover:bg-blue-700 text-white font-bold rounded-cobalt-md transition-colors text-sm whitespace-nowrap"
               >
                 + Baru
               </button>
             </div>
           ) : (
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 value={newMapelName}
                 onChange={(e) => setNewMapelName(e.target.value)}
                 placeholder="Contoh: Bahasa Arab..."
-                className="flex-1 bg-cobalt-neutral border border-gray-200 rounded-cobalt-md p-4 text-cobalt-primary focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary transition-all outline-none"
+                className="w-full sm:flex-1 bg-cobalt-neutral border border-gray-200 rounded-cobalt-md p-4 text-cobalt-primary focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary transition-all outline-none"
                 required
               />
               <button
                 type="button"
                 onClick={() => { setIsAddingNew(false); setNewMapelName(''); }}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-cobalt-primary font-bold rounded-cobalt-md transition-colors text-sm"
+                className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-gray-200 hover:bg-gray-300 text-cobalt-primary font-bold rounded-cobalt-md transition-colors text-sm"
               >
                 Batal
               </button>

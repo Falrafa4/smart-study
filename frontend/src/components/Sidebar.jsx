@@ -51,7 +51,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-[280px] flex-shrink-0 bg-cobalt-surface flex flex-col justify-between z-30 border-r border-gray-200 relative">
+    <aside className="w-[280px] h-screen overflow-y-auto flex-shrink-0 bg-cobalt-surface flex flex-col justify-between z-30 border-r border-gray-200 relative">
       <div className="flex flex-col h-full px-6 py-10">
         
         {/* Logo Branding */}

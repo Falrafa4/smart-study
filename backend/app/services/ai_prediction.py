@@ -32,18 +32,29 @@ def predict_next_material(db: Session, mapel_id: int, user_id: int = 1):
     daftar_materi = [t.judul for t in reversed(riwayat)]
 
     prompt = f"""
-Kamu adalah AI prediktor materi pelajaran untuk mata pelajaran: {mapel_nama}
+Kamu adalah asisten AI untuk sekolah kejuruan (SMK) dengan fokus jurusan:
+- TJAT (Teknik Jaringan Akses Telekomunikasi)
+- SIJA (Sistem Informasi, Jaringan, dan Aplikasi)
 
-Berikut adalah maksimal 5 materi pelajaran terakhir (urut dari yang paling lama ke terbaru):
+Konteks mata pelajaran saat ini: "{mapel_nama}" (ID: {mapel_id}). Berikut adalah 5 materi/tugas terakhir yang telah diberikan kepada siswa:
+
+Berikut adalah maksimal 5 materi/tugas terakhir (urut dari yang paling lama ke terbaru)
+untuk mata pelajaran tersebut:
 
 {chr(10).join(f"{i+1}. {m}" for i, m in enumerate(daftar_materi))}
 
-ATURAN KETAT:
-1. Kamu sedang memprediksi materi untuk mata pelajaran: {mapel_nama}.
-2. JIKA ada data di "5 Materi Terakhir" yang TIDAK BERHUBUNGAN dengan {mapel_nama}, ABAIKAN data tersebut sepenuhnya.
-3. Prediksimu HARUS DAN WAJIB merupakan materi untuk {mapel_nama}.
-4. Berdasarkan pola urutan materi di atas, prediksikan materi apa yang kemungkinan besar akan muncul berikutnya untuk {mapel_nama}.
-5. Jawab HANYA dalam format JSON, tanpa teks tambahan lain:
+ATURAN WAJIB:
+- Prediksi HARUS relevan dengan kurikulum TJAT atau SIJA (jaringan komputer, telekomunikasi,
+  sistem informasi, pemrograman aplikasi, infrastruktur jaringan, keamanan siber dasar, dll).
+- JANGAN memprediksi topik di luar bidang telekomunikasi/jaringan/sistem informasi
+  (misalnya jangan menyebut biologi, sejarah, sastra, atau mapel non-kejuruan lain).
+- Jika materi sebelumnya menunjukkan progresi topik tertentu (misal dari dasar ke lanjutan),
+  lanjutkan pola tersebut secara logis sesuai jenjang SMK.
+- Prediksi harus berupa topik/bab spesifik, bukan mata pelajaran secara umum.
+- Alasan (field "alasan") HARUS singkat, MAKSIMAL 1 kalimat, tidak lebih dari 20 kata.
+  Langsung ke inti pola yang terlihat, tanpa basa-basi atau penjelasan panjang.
+
+Jawab HANYA dalam format JSON, tanpa teks tambahan lain:
 {{"prediksi": "...", "alasan": "..."}}
 """
 
