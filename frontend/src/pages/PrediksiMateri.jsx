@@ -118,7 +118,7 @@ export default function PrediksiMateri() {
         </div>
 
         {/* Sleek Custom Subject Select Selector */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
           <label htmlFor="subject-select" className="text-xs font-bold text-cobalt-secondary uppercase tracking-[0.02em] whitespace-nowrap">
             PILIH MAPEL:
           </label>
