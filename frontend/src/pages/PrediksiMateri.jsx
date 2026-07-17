@@ -126,7 +126,7 @@ export default function PrediksiMateri() {
             id="subject-select"
             value={selectedMapelId}
             onChange={(e) => setSelectedMapelId(e.target.value)}
-            className="bg-white border border-gray-200 rounded-cobalt-md px-4 py-2.5 text-[0.95rem] text-cobalt-primary font-semibold focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary outline-none transition-all cursor-pointer shadow-sm"
+            className="w-full bg-white border border-gray-200 rounded-cobalt-md px-4 py-2.5 text-[0.95rem] text-cobalt-primary font-semibold focus:ring-2 focus:ring-cobalt-tertiary focus:border-cobalt-tertiary outline-none transition-all cursor-pointer shadow-sm"
           >
             {mapelList.length === 0 && (
               <option value="" disabled>-- Pilih Mata Pelajaran --</option>
