@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 # pyrefly: ignore [missing-import]
-from passlib.context import CryptContext
+import bcrypt
 from datetime import datetime, timedelta, timezone
 from jose import jwt
 from fastapi.middleware.cors import CORSMiddleware
@@ -39,13 +39,11 @@ SECRET_KEY = "your-super-secret-key-change-this-in-production"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
+def get_password_hash(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
